@@ -12,7 +12,6 @@ An intelligent Salesforce Lightning Web Component (LWC) that helps support agent
 ## Table of Contents
 
 - [Features](#features)
-- [Architecture](#architecture)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
@@ -22,8 +21,6 @@ An intelligent Salesforce Lightning Web Component (LWC) that helps support agent
 - [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
 - [Future Enhancements](#future-enhancements)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
@@ -81,75 +78,6 @@ Every triage session can be saved to `Case_Triage__c` for:
 - Compliance and reporting
 - Performance analytics
 - Quality assurance reviews
-
----
-
-## Architecture
-
-```mermaid
-flowchart TB
-    subgraph SF[Salesforce Org]
-        subgraph UI[Lightning Experience]
-            CasePage[Case Record Page]
-            LWC[caseTriageCopilot LWC]
-        end
-        
-        subgraph Apex[Apex Layer]
-            Controller[CaseTriageController]
-            Engine[CaseTriageEngine]
-            AIService[OpenAIService]
-        end
-        
-        subgraph Data[Data Layer]
-            Case[(Case)]
-            Email[(EmailMessage)]
-            Comment[(CaseComment)]
-            Task[(Task)]
-            Triage[(Case_Triage__c)]
-        end
-        
-        subgraph Config[Configuration]
-            CMT[OpenAI_Config__mdt]
-            RSS[Remote Site Setting]
-        end
-    end
-    
-    OpenAI[OpenAI API]
-    
-    CasePage --> LWC
-    LWC --> Controller
-    Controller --> Engine
-    Controller --> AIService
-    Controller --> Data
-    AIService --> CMT
-    AIService --> RSS
-    RSS --> OpenAI
-```
-
-### Data Flow
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant LWC
-    participant Controller
-    participant Engine
-    participant OpenAI
-
-    User->>LWC: Opens Case
-    LWC->>Controller: getCaseContext()
-    Controller-->>LWC: Case + Emails + Comments
-    LWC->>Controller: getTriageResult()
-    Controller->>Engine: computeTriage()
-    Engine-->>Controller: Score + Routing + Reasons
-    Controller-->>LWC: TriageResultDTO
-    
-    User->>LWC: Click "Generate Draft"
-    LWC->>Controller: generateAIDraft()
-    Controller->>OpenAI: POST /v1/chat/completions
-    OpenAI-->>Controller: Draft Response
-    Controller-->>LWC: AIDraftDTO
-```
 
 ---
 
@@ -401,16 +329,6 @@ The max tokens is too low. Increase **Max Tokens** to `2000` or higher in OpenAI
 
 ---
 
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
 ### Development Setup
 
 ```bash
@@ -423,11 +341,5 @@ sf project deploy start --target-org CopilotDev
 # Run tests
 sf apex run test --target-org CopilotDev --test-level RunLocalTests
 ```
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
